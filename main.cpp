@@ -28,11 +28,11 @@ public:
         return (new DynamicAutoDiffCostFunction<Eq1Error>(new Eq1Error(_tri, _size)));
     }
     template <typename T>
-    bool operator()(T const* const* XYZs, T* residuals) const {
+    bool operator()(T const* const* XYs, T* residuals) const {
         Matrix<T,3,1> v1;
-        v1 << T(XYZs[tri.v2i] - XYZs[tri.v1i]), T(XYZs[tri.v2i + size] - XYZs[tri.v1i + size]), T(XYZs[tri.v2i + 2*size] - XYZs[tri.v1i + 2*size]);
+        v1 << T(XYs[tri.v2i] - XYs[tri.v1i]), T(XYs[tri.v2i + size] - XYs[tri.v1i + size]), T(0);
         Matrix<T,3,1> v2;
-        v2 << T(XYZs[tri.v3i] - XYZs[tri.v2i]), T(XYZs[tri.v3i + size] - XYZs[tri.v2i + size]), T(XYZs[tri.v3i + 2*size] - XYZs[tri.v2i + 2*size]);
+        v2 << T(XYs[tri.v3i] - XYs[tri.v2i]), T(XYs[tri.v3i + size] - XYs[tri.v2i + size]), T(0);
 
         Matrix<T,3,1> area = v1.cross(v2);
 
@@ -55,11 +55,11 @@ int main(int argc, char* argv[]) {
         for ( objl::Mesh mesh : Loader.LoadedMeshes ) {
             vector <Triangle*> tris;
             int i, id;
-            Eigen::Matrix<double, Dynamic, 1> XYZs;
+            Eigen::Matrix<double, Dynamic, 1> XYs;
 
             int mesh_size = mesh.Vertices.size();
 
-            XYZs.resize(mesh_size*3, 1);
+            XYs.resize(mesh_size*2, 1);
 
             for (i=0, id=0; i < mesh.Indices.size(); i += 3, id++) {
                 tris.push_back( new Triangle (mesh.Indices[i], mesh.Indices[i+1], mesh.Indices[i+2], id) );
@@ -77,9 +77,8 @@ int main(int argc, char* argv[]) {
 
             i = 0;
             for ( objl::Vertex vertex : mesh.Vertices ) {
-                XYZs(i) = (double)vertex.Position.X;
-                XYZs(i + mesh_size) = (double)vertex.Position.Y;
-                XYZs(i + 2*mesh_size) = (double)vertex.Position.Z;
+                XYs(i) = (double)vertex.Position.X;
+                XYs(i + mesh_size) = (double)vertex.Position.Y;
                 i++;
             }
 
@@ -91,7 +90,7 @@ int main(int argc, char* argv[]) {
                 cost_function->AddParameterBlock(mesh_size*3);
                 cost_function->SetNumResiduals(1);
 
-                problem.AddResidualBlock(cost_function, NULL, XYZs.data());
+                problem.AddResidualBlock(cost_function, NULL, XYs.data());
             }
 
             cout << "here" << endl;
