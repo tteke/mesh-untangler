@@ -1,15 +1,17 @@
 #include <iostream>
 #include "OBJ_Loader.h"
 #include <Eigen/Dense>
-#include <ceres/ceres.h>
+//#include <ceres/ceres.h>
 
 using namespace std;
 using namespace Eigen;
+/*
 using ceres::DynamicAutoDiffCostFunction;
 using ceres::CostFunction;
 using ceres::Problem;
 using ceres::Solver;
 using ceres::Solve;
+*/
 
 struct Triangle {
 public:
@@ -24,9 +26,11 @@ public:
     const Triangle tri;
     const int size;
     Eq1Error(const Triangle &_tri, const int &_size) : tri(_tri), size(_size) {};
+	/*
     static DynamicAutoDiffCostFunction<Eq1Error>* Create(const Triangle &_tri, const int _size) {
         return (new DynamicAutoDiffCostFunction<Eq1Error>(new Eq1Error(_tri, _size)));
     }
+	*/
     template <typename T>
     bool operator()(T const* const* XYs, T* residuals) const {
         Matrix<T,3,1> v1;
@@ -82,7 +86,7 @@ int main(int argc, char* argv[]) {
                 i++;
             }
 
-
+			/*
             Problem problem;
 
             for ( Triangle* triangle: tris ) {
@@ -92,6 +96,7 @@ int main(int argc, char* argv[]) {
 
                 problem.AddResidualBlock(cost_function, NULL, XYs.data());
             }
+			*/
 
             cout << "here" << endl;
         }

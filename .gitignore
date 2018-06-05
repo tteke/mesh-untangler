@@ -1,2 +1,12 @@
 .idea/
 cmake-build-debug/
+x64/
+.vs/
+libs/
+targetver.h
+stdafx.h
+stdafx.cpp
+mesh-untangler.vcxproj.user
+mesh-untangler.vcxproj.filters
+mesh-untangler.vcxproj
+mesh-untangler.sln
